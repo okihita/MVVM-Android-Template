@@ -5,8 +5,10 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.paging.LoadState
 import com.okihita.jun30codinginflowtraining.R
 import com.okihita.jun30codinginflowtraining.databinding.FragmentGalleryBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,10 +32,32 @@ class GalleryFragment : Fragment(R.layout.fragment_gallery) {
                 header = UnsplashPhotoLoadStateAdapter { adapter.retry() },
                 footer = UnsplashPhotoLoadStateAdapter { adapter.retry() }
             )
+            btRetry.setOnClickListener {
+                adapter.retry()
+            }
         }
 
         galleryVM.photos.observe(viewLifecycleOwner) {
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
+        }
+
+        adapter.addLoadStateListener {
+            binding.apply {
+                pb.isVisible = it.source.refresh is LoadState.Loading
+                rvImages.isVisible = it.source.refresh is LoadState.NotLoading
+                btRetry.isVisible = it.source.refresh is LoadState.Error
+                tvError.isVisible = it.source.refresh is LoadState.Error
+
+                if (it.source.refresh is LoadState.NotLoading && it.append.endOfPaginationReached &&
+                    adapter.itemCount < 1
+                ) {
+                    rvImages.isVisible = false
+                    tvEmpty.isVisible = true
+                } else {
+                    rvImages.isVisible = true
+                    tvEmpty.isVisible = false
+                }
+            }
         }
 
         setHasOptionsMenu(true)
