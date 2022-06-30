@@ -10,7 +10,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.okihita.jun30codinginflowtraining.data.UnsplashPhoto
 import com.okihita.jun30codinginflowtraining.databinding.ItemUnsplashPhotoBinding
 
-class UnsplashPhotoAdapter :
+class UnsplashPhotoAdapter(private val listener: OnItemClickListener) :
     PagingDataAdapter<UnsplashPhoto, UnsplashPhotoAdapter.PhotoVH>(diffCallback = PHOTO_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoVH {
@@ -24,8 +24,20 @@ class UnsplashPhotoAdapter :
         if (currentPhoto != null) holder.bind(currentPhoto)
     }
 
-    class PhotoVH(private val binding: ItemUnsplashPhotoBinding) :
+    inner class PhotoVH(private val binding: ItemUnsplashPhotoBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val item = getItem(position)
+                    item?.let {
+                        listener.onItemClick(it)
+                    }
+                }
+            }
+        }
 
         fun bind(photo: UnsplashPhoto) {
             binding.apply {
@@ -39,6 +51,10 @@ class UnsplashPhotoAdapter :
                 tvUsername.text = photo.user.name
             }
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(photo: UnsplashPhoto)
     }
 
     companion object {
