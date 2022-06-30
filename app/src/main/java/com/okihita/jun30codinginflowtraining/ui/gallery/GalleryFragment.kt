@@ -23,7 +23,10 @@ class GalleryFragment : Fragment(R.layout.fragment_gallery) {
         val adapter = UnsplashPhotoAdapter()
         binding.apply {
             rvImages.setHasFixedSize(true)
-            rvImages.adapter = adapter
+            rvImages.adapter = adapter.withLoadStateHeaderAndFooter(
+                header = UnsplashPhotoLoadStateAdapter { adapter.retry() },
+                footer = UnsplashPhotoLoadStateAdapter { adapter.retry() }
+            )
         }
 
         galleryVM.photos.observe(viewLifecycleOwner) {
