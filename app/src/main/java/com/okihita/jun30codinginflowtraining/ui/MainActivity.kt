@@ -1,7 +1,8 @@
-package com.okihita.jun30codinginflowtraining
+package com.okihita.jun30codinginflowtraining.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.okihita.jun30codinginflowtraining.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

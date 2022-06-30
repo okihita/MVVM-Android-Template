@@ -1,4 +1,4 @@
-package com.okihita.jun30codinginflowtraining.model
+package com.okihita.jun30codinginflowtraining.data
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
